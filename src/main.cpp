@@ -95,9 +95,6 @@ int main() {
           double throttle_value = j[1]["throttle"];  
           double Lf = 2.67;
           
-          std::cout << "px = " << px << std::endl;
-          std::cout << "py = " << py << std::endl;
-          
           // apply latency for 100ms
           double dt = 0.1;
           double delta = steer_value;
@@ -108,10 +105,7 @@ int main() {
           py = py + v * sin(psi) * dt;
           psi = psi - v * delta / Lf * dt;
           v = v + a * dt;
-          
-          std::cout << "new px = " << px << std::endl;
-          std::cout << "new py = " << py << std::endl;
-          
+                   
           for (int i = 0; i < ptsx.size(); i++) {
             //shift car reference angle to 90 degrees
             double shift_x = ptsx[i] - px;

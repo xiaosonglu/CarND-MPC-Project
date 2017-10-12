@@ -2,6 +2,34 @@
 Self-Driving Car Engineer Nanodegree Program
 
 ---
+## The Model
+The state includes vehicle's positions *x* and *y*, orientation *psi* and velocity *v*. Actuators include steering angle *delta* and acceleration *a* (throttle and break pedals).
+
+The state update equations are:
+
+    x[t+1] = x[t] + v[t] * cos(psi[t]) * dt 
+    y[t+1] = y[t] + v[t] * sin(psi[t]) * dt
+    psi[t+1] = psi[t] + v[t] / Lf * delta[t] * dt 
+    v[t+1] = v[t] + a[t] * dt
+
+The cross track error *cte* and orientation error *epsi* update equations are:
+
+    cte[t+1] = f(x[t]) - y[t] + (v[t] * sin(epsi[t]) * dt)
+    epsi[t+1] = psi[t] - psides[t] + (v[t] / Lf * delta[t]  * dt)
+
+## Timestep Length and Elapsed Duration (N & dt)
+The timestep length N determines the number of variables optimized by the MPC. Ideally, N should be as large as possible but the computational cost will be large as well. By running with N = 10 and N = 25, I found N = 10 gave a better result. Also I found dt = 0.1 had better result than dt = 0.05 by experiments.
+
+## Polynomial Fitting and MPC Preprocessing
+Based on the trajectories in the simulation, I use 3rd order polynomial to fit to the waypoints. For MPC preprocessing, the reference angle has been shifted 90 degree and the car's coordinates have been transformed to origin. This will help the MPC evaluation process.
+
+## Model Predictive Control with Latency
+The approach I used for dealing with latency is to calculate a new state using the vehicle model based on the current state for the duration of the latency. The resulting new state from the calculation is then passed to MPC for processing.
+
+## Discussion on tuning MPC
+By tuning the steering part and cross track error part in the cost function, the car can be run smoothly and close to the reference track without lots of overshoot. The current tuning method is multiplying 100 for the cross track error part and multiplying 1000 for the steering part.
+
+I run simulations on two different computers (one is fast and one is slow). The above settings work fine for the fast computer. For the slow computer, the multiplication for the cross track error part needs to be changed from 100 to 1.
 
 ## Dependencies
 
